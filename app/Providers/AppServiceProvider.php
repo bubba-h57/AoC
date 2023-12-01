@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Arr::macro('fromFile', function (string $contents): array {
+            return preg_split("/\r\n|\n|\r/", $contents);
+        });
     }
 }

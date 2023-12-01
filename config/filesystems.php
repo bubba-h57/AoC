@@ -30,6 +30,12 @@ return [
 
     'disks' => [
 
+        'puzzles' => [
+            'driver' => 'local',
+            'root' => app_path('../resources/puzzles'),
+            'throw' => false,
+        ],
+
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
