@@ -33,32 +33,40 @@ class Day01 extends Solution  implements Day
 
     public function part1()
     {
-        $coordinates = $this->input->map(function ($line){
-            $numbers = str_split(preg_replace('/[a-zA-Z]/', '', $line));
-            return $numbers[0] . end($numbers);
+        $coordinates = $this->input->map(function (string $line){
+            $numbers = str_split(string: preg_replace(
+                pattern: '/[a-zA-Z]/',
+                replacement: '',
+                subject: $line));
+            return $numbers[0] . end(array: $numbers);
         });
         return $coordinates->sum();
     }
 
     public function part2()
     {
-        $coordinates = $this->input->map(function ($line){
-            $characters = collect(str_split($line));
+        $coordinates = $this->input->map(function (string $line){
+            $characters = collect(str_split(string: $line));
             $this->interpreted = '';
 
-            $characters->each(function ($character){
+            $characters->each(function (string $character){
                 $this->interpreted .= $character;
-                $this->words->each(function ($word, $index) use ($character){
+                $this->words->each(function (string $word, int $index) use ($character){
+
                     $this->interpreted = Str::replace(
                         search: $word,
-                        replace: $index + 1 . $character,
+                        replace: ++$index . $character,
                         subject: $this->interpreted
                     );
                 });
             });
 
-            $numbers = str_split(preg_replace('/[a-zA-Z]/', '', $this->interpreted));
-            return $numbers[0] . end($numbers);
+            $numbers = str_split(string: preg_replace(
+                pattern: '/[a-zA-Z]/',
+                replacement: '',
+                subject: $this->interpreted
+            ));
+            return $numbers[0] . end(array: $numbers);
 
         });
 
