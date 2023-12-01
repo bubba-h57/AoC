@@ -33,8 +33,10 @@ class RunDay extends Command
         $class = sprintf('App\Services\AoC\Solutions\Y%d\Day%02d',
         $year, $day);
         $day = new $class();
-        $this->info('Part 1: ' . $day->part1());
-        $this->info('Part 2: ' . $day->part2());
+
+        $this->info($class::title);
+        $this->info('Part One: ' . $day->part1());
+        $this->info('Part Two: ' . $day->part2());
 
         return Command::SUCCESS;
     }
