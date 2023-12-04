@@ -11,7 +11,7 @@ class Day03 extends Solution  implements Day
 {
     public const day = 3;
     public const year = 2023;
-    public const title = '';
+    public const title = 'Day 3: Gear Ratios';
 
 
     public function __construct(?Collection $input = null)
