@@ -7,9 +7,9 @@ use App\Services\AoC\Solutions\Solution;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-class Day05 extends Solution  implements Day
+class Day20 extends Solution  implements Day
 {
-    public const day = 5;
+    public const day = 20;
     public const year = 2023;
     public const title = '';
 
