@@ -12,15 +12,15 @@ abstract class Solution
 
     public function __construct(?Collection $input=null)
     {
-
-        $this->input = $input ?? collect(Arr::fromFile(
-            Storage::disk('puzzles')
-                ->get(sprintf(
-                        '/%d/%02d/input.txt',
-                        static::year,
-                        static::day
-                    )
+        $this->fileContent = Storage::disk('puzzles')
+            ->get(sprintf(
+                    '/%d/%02d/input.txt',
+                    static::year,
+                    static::day
                 )
+            );
+        $this->input = $input ?? collect(Arr::fromFile(
+            $this->fileContent
         ));
     }
 }
