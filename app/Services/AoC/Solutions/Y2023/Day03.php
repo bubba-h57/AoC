@@ -13,72 +13,100 @@ class Day03 extends Solution  implements Day
     public const year = 2023;
     public const title = 'Day 3: Gear Ratios';
 
+    public const DIRECTIONS = [
+        [-1, -1], [-1, 0], [-1, 1],
+        [0, -1],             [0, 1],
+        [1, -1], [1, 0], [1, 1],
+    ];
+
+    private array $validNumbers = [];
+    private array $gears = [];
+    private array $grid = [];
 
     public function __construct(?Collection $input = null)
     {
         parent::__construct($input);
+        $this->grid = $this->parse($this->input->toArray());
+        $this->init();
     }
 
-    public function part1()
+
+    protected function init(): void
     {
-        $total = 0;
+        $number = '';
+        $symbolCoordinates = [];
 
-        $whereNumbers = [];
+        foreach ($this->grid as $x => $row) {
+            foreach ($row as $y => $cell) {
+                if (is_numeric($cell)) {
+                    $number .= $cell;
+                    $symbolCoordinates = $this->getSymbol($x, $y) ?: $symbolCoordinates;
 
-        foreach ($this->input as $index => $line) {
-            preg_match_all('/\d+/', $line, $matches);
-            $matches = $matches[0];
+                    if ($y < count($row) - 1) {
+                        continue;
+                    }
+                }
 
-            $parsedLine = $line;
+                if (!empty($number) && $symbolCoordinates) {
+                    $this->validNumbers[] = (int) $number;
 
-            foreach ($matches as $match) {
+                    if ($this->isGear($symbolCoordinates)) {
+                        $gearIndex = implode('|', $symbolCoordinates);
+                        $this->gears[$gearIndex][] = (int) $number;
+                    }
+                }
 
-                $replaceString = str_repeat('?', strlen($match));
-                $position = strpos($parsedLine, $match);
-
-                $parsedLine = substr_replace($parsedLine, $replaceString, $position, strlen($match));
-                $whereNumbers[] = [$index, $position, $match];
+                $symbolCoordinates = [];
+                $number = '';
             }
         }
-
-        foreach ($whereNumbers as $whereNumber) {
-            $line = $whereNumber[0];
-            $pos = $whereNumber[1];
-            $number = $whereNumber[2];
-            $length = strlen($number);
-
-            for ($i = -1; $i <= $length; $i++) {
-
-                $characters = [];
-
-                if ($line - 1 >= 0 && $pos + $i >= 0 && $pos + $i < strlen($this->input[0])) {
-                    $characters[] = $this->input[$line - 1][$pos + $i];
-                }
-
-                if ($pos + $i >= 0 && $pos + $i < strlen($this->input[0])) {
-                    $characters[] = $this->input[$line][$pos + $i];
-                }
-
-                if ($line + 1 < count($this->input) && $pos + $i >= 0 && $pos + $i < strlen($this->input[0])) {
-                    $characters[] = $this->input[$line + 1][$pos + $i];
-                }
-
-                $arrayContainsSymbol = array_filter($characters, function ($character) {
-                    return !is_numeric($character) && $character !== '.';
-                });
-
-                if (!empty($arrayContainsSymbol)) {
-                    $total += $number;
-                    break;
-                }
-            }
-        }
-
-        return $total;
     }
 
-    public function part2()
+    public function part1(): int
     {
+        return array_sum($this->validNumbers);
+    }
 
+    public function part2(): int
+    {
+        return array_reduce(
+            array_filter(
+                $this->gears,
+                fn ($numbers) => count($numbers) > 1
+            ),
+            fn ($carry, $numbers) => $carry + array_product($numbers));
+    }
+
+    private function parse(array $data): array
+    {
+        return array_map(fn ($line) => str_split($line), $data);
+    }
+
+    private function getSymbol(int $x, int $y): array
+    {
+        foreach (self::DIRECTIONS as [$dx, $dy]) {
+            if (!isset($this->grid[$x + $dx][$y + $dy])) {
+                continue;
+            }
+
+            if ('.' === $this->grid[$x + $dx][$y + $dy]) {
+                continue;
+            }
+
+            if (is_numeric($this->grid[$x + $dx][$y + $dy])) {
+                continue;
+            }
+
+            return [$x + $dx, $y + $dy];
+        }
+
+        return [];
+    }
+
+    private function isGear(array $coordinates): bool
+    {
+        [$x, $y] = $coordinates;
+
+        return '*' === $this->grid[$x][$y];
     }
 }
