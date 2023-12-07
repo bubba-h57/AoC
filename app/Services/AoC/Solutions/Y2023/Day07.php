@@ -11,7 +11,7 @@ class Day07 extends Solution  implements Day
 {
     public const day = 7;
     public const year = 2023;
-    public const title = '';
+    public const title = 'Day 7: Camel Cards';
 
 
     public function __construct(?Collection $input = null)
